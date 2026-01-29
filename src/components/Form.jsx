@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Container, Row, Col, Label, Input } from "reactstrap";
-import { addPost } from "../api/PostApi";
+import { useEffect, useState } from "react";
+import { Container, Row, Col, Label, Input, Button } from "reactstrap";
+import { addPost, upadtePost } from "../api/PostApi";
 
-export const Form = ({ data, setData }) => {
+export const Form = ({ data, setData, editData, setEditData }) => {
   const [addData, setaddData] = useState({
     title: "",
     body: "",
   });
+  const isEmpty = Object.keys(editData).length;
 
   const handleData = (e) => {
     const name = e.target.name;
@@ -18,9 +19,19 @@ export const Form = ({ data, setData }) => {
       };
     });
   };
-  const insertPost = async (e) => {
+
+  //use effect
+
+  useEffect(() => {
+    editData &&
+      setaddData({
+        title: editData.title || "",
+        body: editData.body || "",
+      });
+  }, [editData]);
+
+  const insertPost = async () => {
     try {
-      e.preventDefault();
       const res = await addPost(addData);
       if (res.status === 201) {
         console.log(res);
@@ -31,12 +42,39 @@ export const Form = ({ data, setData }) => {
       console.error(error);
     }
   };
+
+  const handleUpadtePost = async () => {
+    const res = await upadtePost(editData.id, addData);
+    try {
+      setData((prev) => {
+        return prev.map((current) => {
+          return current.id == res.data.id ? res.data : current;
+        });
+      });
+      setaddData({ title: "", body: "" });
+      setEditData({});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const action = e.nativeEvent.submitter.value;
+
+    if (action == "add") {
+      insertPost();
+    } else if (action == "edit") {
+      handleUpadtePost();
+    }
+  };
+
   return (
     <>
       <Container>
         <Row>
           <Col sm={{ size: 6, offset: 4 }}>
-            <form onSubmit={insertPost}>
+            <form onSubmit={handleSubmit}>
               <Label>title</Label>
               <Input
                 type="text"
@@ -51,7 +89,9 @@ export const Form = ({ data, setData }) => {
                 value={addData.body}
                 onChange={handleData}
               ></Input>
-              <Input type="submit" />
+              <Button type="submit" value={isEmpty ? "edit" : "add"}>
+                {isEmpty ? "edit" : "add"}
+              </Button>
             </form>
           </Col>
         </Row>

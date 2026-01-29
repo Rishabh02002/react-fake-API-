@@ -7,6 +7,7 @@ import { Button, Col, Container, Input, Label, Row } from "reactstrap";
 
 const Posts = () => {
   const [data, setData] = useState([]);
+  const [editData,setEditData]=useState({});
   const getPostData = async () => {
     const response = await getPosts();
     setData(response.data);
@@ -29,10 +30,13 @@ const Posts = () => {
       console.log(error);
     }
   };
+const editPostData=(currentEle)=>{
+  setEditData(currentEle);
+}
   return (
     <>
   <section>
-    <Form data={data} setData={setData}/>
+    <Form data={data} setData={setData} editData={editData} setEditData={setEditData}/>
   </section>
       {console.log(data)}
       <div className="Card">
@@ -40,7 +44,7 @@ const Posts = () => {
           return (
             <div key={currentEle.id} className="Post">
               <ShowPosts post={currentEle} />
-              <Button>Insert</Button>
+              <Button onClick={()=>{editPostData(currentEle)}}>Edit</Button>
               <Button
                 onClick={() => {
                   deletePostOperaion(currentEle.id);
