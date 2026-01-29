@@ -1,0 +1,31 @@
+.Post{
+    background-color: rgb(4, 98, 62);
+    font-family: Arial, Helvetica, sans-serif;
+    color:white;
+    border-radius: 5px;
+    border: 5px solid rgb(56, 1, 1);
+    border-radius: 3px;
+    margin: 5px;
+    text-align: center;
+    height: fit-content;
+
+    
+}
+Button{
+    margin: 5px;
+    background-color: rgb(110, 103, 185);
+}
+.Card{
+    
+    display: grid;
+    grid-template-columns: repeat(3,30%);
+    gap: 3.2rem;
+   
+}
+CardFooter{
+    border: white;
+}
+Label{
+    color: aliceblue;
+    margin: 15px;
+}
